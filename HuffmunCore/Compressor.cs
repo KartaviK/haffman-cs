@@ -18,30 +18,40 @@ namespace HuffmunCore
             this.encoding = encoding;
         }
 
-        public bool Compress(Stream input, string pathToSave)
+        public Stream Compress(Stream input, Dictionary<Byte, Int64> map)
+        {
+            Tree tree = new Tree();
+            map = AnalizeStreamForMap(input, map);
+
+            using (var reader = new BinaryReader(input, encoding))
+            {
+
+
+            }
+            
+        }
+
+        public Dictionary<Byte, Int64> AnalizeStreamForMap(Stream input, Dictionary<Byte, Int64> map)
         {
             using (var reader = new BinaryReader(input, encoding))
             {
-                Tree tree = new Tree();
-                Dictionary<Byte, Int64> byteMap = InitByteMap();
                 Int64 length = (Int64)reader.BaseStream.Length;
 
                 while (reader.BaseStream.Position != length)
                 {
-                    Byte currentByte = reader.ReadByte();
-                    byteMap[currentByte]++;
-                }
-
-                foreach(KeyValuePair<byte, Int64> charCount in charsCounts.OrderBy(key => key.Value))
-                {
-                    tree.Insert(charCount.Key);
+                    map[reader.ReadByte()]++;
                 }
             }
 
-            return true;
+            return map;
         }
 
-        protected Dictionary<Byte, Int64> InitByteMap()
+        public Dictionary<Byte, Int64> AnalizeStreamForMap(Stream input)
+        {
+            return this.AnalizeStreamForMap(input, this.InitEmptyMap());
+        }
+
+        protected Dictionary<Byte, Int64> InitEmptyMap()
         {
             var map = new Dictionary<Byte, Int64>(256);
 
