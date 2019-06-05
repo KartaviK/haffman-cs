@@ -1,27 +1,26 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HuffmunCore
+namespace Core
 {
-    [Serializable]
-    internal class Tree
+    public class Tree
     {
         private Node root;
 
         public Tree() { }
 
-        public void Fill(Dictionary<Byte, Int64> map)
+        public void Fill(Dictionary<byte, long> map)
         {
             if (map.Count < 2)
             {
                 throw new ArgumentException("Binary map must contain more than 2 elements");
             }
 
-            List<Node> nodes = new List<Node>();
+            var nodes = new List<Node>();
 
             foreach (var pair in map.OrderBy(key => key.Value))
             {
@@ -34,7 +33,7 @@ namespace HuffmunCore
                 nodes.RemoveRange(0, 2);
 
                 nodes.Insert(
-                    nodes.FindIndex(element => element.SummuryWeight() >= node.SummuryWeight()),
+                    nodes.FindIndex(element => element.SummaryWeight() >= node.SummaryWeight()),
                     node
                 );
             }
@@ -42,14 +41,14 @@ namespace HuffmunCore
             this.root = nodes.First();
         }
 
-        public Dictionary<Byte, BitArray> PriceMap()
+        public Dictionary<byte, BitArray> PriceMap()
         {
-            var priceMap = new Dictionary<Byte, BitArray>();
+            var priceMap = new Dictionary<byte, BitArray>();
             var node = root;
 
             do
             {
-                List<bool> price= new List<bool>();
+                var price= new List<bool>();
 
                 if (node.Right != null)
                 {
