@@ -3,7 +3,7 @@ using System;
 namespace Core
 {
     /// <summary>
-    /// Represents binary tree's indivisible element
+    ///     Represents binary tree's indivisible element
     /// </summary>
     [Serializable]
     public class Node
@@ -14,7 +14,7 @@ namespace Core
 
         public long Weight
         {
-            get => weight;
+            get => IsLeaf() ? weight : SummaryWeight();
             set => weight = value;
         }
 
@@ -27,16 +27,16 @@ namespace Core
 
         public Node(byte value, long weight)
         {
-            this.Value = value;
+            Value = value;
             this.weight = weight;
         }
 
         public long SummaryWeight()
         {
-            var rightWeight = this.Right?.SummaryWeight() ?? 0;
-            var leftWeight = this.Left?.SummaryWeight() ?? 0;
+            var rightWeight = Right?.SummaryWeight() ?? 0;
+            var leftWeight = Left?.SummaryWeight() ?? 0;
 
-            return leftWeight + rightWeight + this.Weight;
+            return leftWeight + rightWeight + weight;
         }
 
         public bool IsLeaf()
