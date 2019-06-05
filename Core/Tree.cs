@@ -42,9 +42,7 @@ namespace Core
 
             for (byte value = 0; value < byte.MaxValue; value++)
             {
-                var price = new List<bool>();
-
-                price = Traverse(Root, value, price);
+                var price = CalculateBytePrice(value);
 
                 if (price != null)
                 {
@@ -55,7 +53,12 @@ namespace Core
             return map;
         }
 
-        private static List<bool> Traverse(Node target, byte value, List<bool> price)
+        private List<bool> CalculateBytePrice(byte value)
+        {
+            return CalculateBytePrice(Root, value, new List<bool>());
+        }
+
+        private static List<bool> CalculateBytePrice(Node target, byte value, List<bool> price)
         {
             if (target.IsLeaf())
             {
@@ -72,7 +75,7 @@ namespace Core
                 path.AddRange(price);
                 path.Add(false);
 
-                left = Traverse(target.Left, value, path);
+                left = CalculateBytePrice(target.Left, value, path);
             }
 
             if (target.Right != null)
@@ -82,7 +85,7 @@ namespace Core
                 path.AddRange(price);
                 path.Add(true);
 
-                right = Traverse(target.Right, value, path);
+                right = CalculateBytePrice(target.Right, value, path);
             }
 
             return left ?? right;
