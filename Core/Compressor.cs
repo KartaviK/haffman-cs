@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Text;
 
 namespace Core
 {
     public class Compressor
     {
-        private Encoding encoding = Encoding.ASCII;
+        private readonly Encoding encoding = Encoding.ASCII;
 
         public Compressor()
         {
@@ -29,6 +26,9 @@ namespace Core
             {
                 // TODO: Using byte map compress input stream and return it
             }
+
+            // Current return statement help to compile app in dev environment
+            return input;
         }
 
         private Dictionary<byte, long> AnalyzeStreamForMap(Stream input, Dictionary<byte, long> map)
@@ -37,10 +37,7 @@ namespace Core
             {
                 var length = reader.BaseStream.Length;
 
-                while (reader.BaseStream.Position != length)
-                {
-                    map[reader.ReadByte()]++;
-                }
+                while (reader.BaseStream.Position != length) map[reader.ReadByte()]++;
             }
 
             return map;
@@ -48,7 +45,7 @@ namespace Core
 
         private Dictionary<byte, long> AnalyzeStreamForMap(Stream input)
         {
-            return this.AnalyzeStreamForMap(input, InitEmptyMap());
+            return AnalyzeStreamForMap(input, InitEmptyMap());
         }
 
         private static Dictionary<byte, long> InitEmptyMap()
