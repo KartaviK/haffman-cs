@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core
 {
@@ -11,7 +9,7 @@ namespace Core
     {
         private Node root;
 
-        public Tree() { }
+        public Node Root => root;
 
         public void Fill(Dictionary<byte, long> map)
         {
@@ -22,49 +20,69 @@ namespace Core
 
             var nodes = new List<Node>();
 
-            foreach (var pair in map.OrderBy(key => key.Value))
-            {
-                nodes.Add(new Node(pair.Key, pair.Value));
-            }
+            map.OrderBy(key => key.Value)
+                .ToList()
+                .ForEach(pair => nodes.Add(new Node(pair.Key, pair.Value)));
 
             while (nodes.Count >= 2)
             {
-                var node = new Node { Left = nodes[0], Right = nodes[1] };
+                var node = new Node {Left = nodes[0], Right = nodes[1]};
                 nodes.RemoveRange(0, 2);
 
-                nodes.Insert(
-                    nodes.FindIndex(element => element.SummaryWeight() >= node.SummaryWeight()),
-                    node
-                );
+                var index = nodes.FindIndex(element => element.SummaryWeight() >= node.SummaryWeight());
+                nodes.Insert(index < 0 ? 0 : index, node);
             }
 
-            this.root = nodes.First();
+            root = nodes.First();
         }
 
         public Dictionary<byte, BitArray> PriceMap()
         {
-            var priceMap = new Dictionary<byte, BitArray>();
-            var node = root;
+            var map = new Dictionary<byte, BitArray>();
 
-            do
+            for (byte value = 0; value < byte.MaxValue; value++)
             {
-                var price= new List<bool>();
+                var price = new List<bool>();
 
-                if (node.Right != null)
+                price = Traverse(Root, value, price);
+
+                if (price != null)
                 {
-                    price.Add
-                }
-
-                if (node.IsLeaf())
-                {
-                    if (!priceMap.ContainsKey(node.Value))
-                    {
-                        priceMap[node.Value][]
-                    }
-
-
+                    map.Add(value, new BitArray(price.ToArray()));
                 }
             }
+
+            return map;
+        }
+
+        private static List<bool> Traverse(Node target, byte value, List<bool> price)
+        {
+            if (target.IsLeaf())
+            {
+                return target.Value.Equals(value) ? price : null;
+            }
+
+            List<bool> left = null;
+            List<bool> right = null;
+
+            if (target.Left != null)
+            {
+                var path = new List<bool>();
+                path.AddRange(price);
+                path.Add(false);
+
+                left = Traverse(target.Left, value, path);
+            }
+            else if (target.Right != null)
+            {
+                var rightPath = new List<bool>();
+                rightPath.AddRange(price);
+                rightPath.Add(true);
+
+                right = Traverse(target.Right, value, rightPath);
+            }
+
+            return left ?? right;
         }
     }
 }
