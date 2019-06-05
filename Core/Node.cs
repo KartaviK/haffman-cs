@@ -10,7 +10,7 @@ namespace Core
     {
         [NonSerialized] private long weight;
 
-        public byte Value { get; set; }
+        public byte? Value { get; }
 
         public long Weight
         {

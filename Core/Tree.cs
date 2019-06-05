@@ -68,18 +68,21 @@ namespace Core
             if (target.Left != null)
             {
                 var path = new List<bool>();
+                
                 path.AddRange(price);
                 path.Add(false);
 
                 left = Traverse(target.Left, value, path);
             }
-            else if (target.Right != null)
-            {
-                var rightPath = new List<bool>();
-                rightPath.AddRange(price);
-                rightPath.Add(true);
 
-                right = Traverse(target.Right, value, rightPath);
+            if (target.Right != null)
+            {
+                var path = new List<bool>();
+                
+                path.AddRange(price);
+                path.Add(true);
+
+                right = Traverse(target.Right, value, path);
             }
 
             return left ?? right;
