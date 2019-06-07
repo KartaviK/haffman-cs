@@ -38,7 +38,7 @@ namespace Core
             return this;
         }
 
-        public Dictionary<byte, BitArray> PriceMap()
+        public Dictionary<byte, BitArray> ToPriceMap()
         {
             var map = new Dictionary<byte, BitArray>();
 

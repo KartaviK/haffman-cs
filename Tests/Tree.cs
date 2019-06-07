@@ -36,7 +36,7 @@ namespace Tests
 
             tree.Fill(map);
 
-            var price = tree.PriceMap();
+            var price = tree.ToPriceMap();
             
             Assert.True(price.Count() == 7, $"Actual count is {price.Count()}");
             Assert.AreEqual(

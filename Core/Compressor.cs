@@ -9,19 +9,18 @@ namespace Core
     public class Compressor
     {
         private readonly Encoding encoding = Encoding.ASCII;
-        private Tree tree;
 
-        public Tree Tree => tree;
+        public Tree Tree { get; }
 
         public Compressor()
         {
-            this.tree = new Tree();
+            this.Tree = new Tree();
         }
 
         public Compressor(Encoding encoding, Tree tree = null)
         {
             this.encoding = encoding;
-            this.tree = tree ?? new Tree();
+            this.Tree = tree ?? new Tree();
         }
 
         /// <summary>
@@ -35,9 +34,7 @@ namespace Core
             return Compress(
                 input,
                 output,
-                tree.Fill(
-                    AnalyzeStreamForMap(input)
-                ).PriceMap()
+                Tree.Fill(AnalyzeStreamForMap(input)).ToPriceMap()
             );
         }
 
@@ -47,11 +44,12 @@ namespace Core
             {
                 using (var writer = new BinaryWriter(output, encoding))
                 {
-                    var bits = bytePrice[reader.ReadByte()];
-
-                    foreach (bool bit in bits)
+                    while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
-                        writer.Write(bit);
+                        foreach (bool bit in bytePrice[reader.ReadByte()])
+                        {
+                            writer.Write(bit);
+                        }
                     }
                 }
             }
@@ -80,9 +78,12 @@ namespace Core
             {
                 using (var writer = new BinaryWriter(output, encoding))
                 {
-                    foreach (bool bit in bits[reader.ReadByte()])
+                    while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
-                        writer.Write(bit);
+                        foreach (bool bit in bits[reader.ReadByte()])
+                        {
+                            writer.Write(bit);
+                        }
                     }
                 }
             }
