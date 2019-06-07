@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace App
 {
@@ -6,8 +7,7 @@ namespace App
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
+            var formatter = new BinaryFormatter();
             // TODO: implement simple usage of compressor via console commands
         }
     }

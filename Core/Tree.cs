@@ -11,7 +11,7 @@ namespace Core
 
         public Node Root => root;
 
-        public void Fill(Dictionary<byte, long> map)
+        public Tree Fill(Dictionary<byte, long> map)
         {
             if (map.Count < 2)
             {
@@ -34,6 +34,8 @@ namespace Core
             }
 
             root = nodes.First();
+
+            return this;
         }
 
         public Dictionary<byte, BitArray> PriceMap()
