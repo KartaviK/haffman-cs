@@ -5,17 +5,15 @@ namespace Core
     /// <summary>
     ///     Represents binary tree's indivisible element
     /// </summary>
-    [Serializable]
     public class Node
     {
-        [NonSerialized] private long weight;
+        private readonly long weight;
 
         public byte? Value { get; }
 
         public long Weight
         {
             get => IsLeaf() ? weight : SummaryWeight();
-            set => weight = value;
         }
 
         public Node Left { get; set; }
