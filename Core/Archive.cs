@@ -5,7 +5,6 @@ using System.IO;
 
 namespace Core
 {
-    [Serializable]
     public class Archive
     {
         private Stream data;
@@ -18,6 +17,29 @@ namespace Core
         {
             this.data = data;
             this.bytePrice = bytePrice;
+        }
+
+        public Stream Serialize()
+        {
+            var tempStream = new MemoryStream();
+
+            using (var writer = new BinaryWriter(tempStream))
+            {
+                writer.Write((byte)BytePrice.Count);
+
+                foreach (var priceOfByte in BytePrice)
+                {
+                    writer.Write(priceOfByte.Key);
+                    writer.Write((byte)priceOfByte.Value.Count);
+                    
+                    foreach (bool bit in priceOfByte.Value)
+                    {
+                        writer.Write(bit);
+                    }
+                }
+            }
+
+            return tempStream;
         }
     }
 }

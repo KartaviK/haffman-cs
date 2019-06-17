@@ -10,25 +10,13 @@ namespace Core
     {
         private readonly Encoding encoding = Encoding.ASCII;
 
-        public Tree Tree { get; }
+        private Tree Tree { get; }
 
-        public Compressor()
+        public Compressor(Tree tree = null)
         {
-            this.Tree = new Tree();
+            Tree = tree ?? new Tree();
         }
 
-        public Compressor(Encoding encoding, Tree tree = null)
-        {
-            this.encoding = encoding;
-            this.Tree = tree ?? new Tree();
-        }
-
-        /// <summary>
-        ///     Encodes data using Huffman algorithm
-        /// </summary>
-        /// <param name="input">Stream of data needs to encode</param>
-        /// <param name="output">Stream to write encoded data</param>
-        /// <returns>Object with stream of encoded data with byte price dictionary. It is need to serialize</returns>
         public Archive Compress(Stream input, Stream output)
         {
             return Compress(
@@ -41,15 +29,13 @@ namespace Core
         public Archive Compress(Stream input, Stream output, Dictionary<byte, BitArray> bytePrice)
         {
             using (var reader = new BinaryReader(input, encoding))
+            using (var writer = new BinaryWriter(output, encoding))
             {
-                using (var writer = new BinaryWriter(output, encoding))
+                while (reader.BaseStream.Position != reader.BaseStream.Length)
                 {
-                    while (reader.BaseStream.Position != reader.BaseStream.Length)
+                    foreach (bool bit in bytePrice[reader.ReadByte()])
                     {
-                        foreach (bool bit in bytePrice[reader.ReadByte()])
-                        {
-                            writer.Write(bit);
-                        }
+                        writer.Write(bit);
                     }
                 }
             }
@@ -57,10 +43,10 @@ namespace Core
             return new Archive(output, bytePrice);
         }
 
-        public Stream Decompress(Archive arcive, Stream output)
+        public Stream Decompress(Archive archive, Stream output)
         {
-            var bytesPrices = arcive.BytePrice.OrderBy(pair => pair.Key);
-            var bits = new List<bool[]>(arcive.BytePrice.Count);
+            var bytesPrices = archive.BytePrice.OrderBy(pair => pair.Key);
+            var bits = new List<bool[]>(archive.BytePrice.Count);
 
             foreach (var bytePrice in bytesPrices)
             {
@@ -74,16 +60,14 @@ namespace Core
                 bits.Add(convertedPrice);
             }
 
-            using (var reader = new BinaryReader(arcive.Data, encoding))
+            using (var reader = new BinaryReader(archive.Data, encoding))
+            using (var writer = new BinaryWriter(output, encoding))
             {
-                using (var writer = new BinaryWriter(output, encoding))
+                while (reader.BaseStream.Position != reader.BaseStream.Length)
                 {
-                    while (reader.BaseStream.Position != reader.BaseStream.Length)
+                    foreach (var bit in bits[reader.ReadByte()])
                     {
-                        foreach (bool bit in bits[reader.ReadByte()])
-                        {
-                            writer.Write(bit);
-                        }
+                        writer.Write(bit);
                     }
                 }
             }
