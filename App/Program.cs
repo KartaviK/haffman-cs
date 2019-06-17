@@ -38,26 +38,17 @@ namespace App
 
                 return;
             }
-
-            target = args[0];
-
-            if (!File.Exists(target))
-            {
-                Console.WriteLine($"File {target} not exist!");
-
-                return;
-            }
-
-            archive = compressor.Compress(
-                File.Open(target, FileMode.Open),
-                File.Open($"{target}{Extension}", FileMode.Create)
-            );
-
-            Console.WriteLine();
         }
 
         private static void Compress(string target)
         {
+            if (!IsFileValid(target))
+            {
+                Console.WriteLine($"File {target} not exist.");
+
+                return;
+            }
+
             compressor.Compress(
                 File.Open(target, FileMode.Open),
                 File.Open($"{target}{Extension}", FileMode.Create)
@@ -66,6 +57,17 @@ namespace App
 
         private static void Decompress(string target)
         {
+            if (!IsFileValid(target))
+            {
+                Console.WriteLine($"File {target} not exist.");
+
+                return;
+            }
+        }
+
+        private static bool IsFileValid(string target)
+        {
+            return File.Exists(target);
         }
     }
 }

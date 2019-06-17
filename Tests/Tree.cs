@@ -17,7 +17,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestWeightAfterFill()
+        public void WeightAfterFill()
         {
             var map = InitTestMap();
 
@@ -30,7 +30,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestPriceMap()
+        public void PriceMap()
         {
             var map = InitTestMap();
 

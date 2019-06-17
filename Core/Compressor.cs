@@ -19,17 +19,21 @@ namespace Core
 
         public Archive Compress(Stream input, Stream output)
         {
+            var map = AnalyzeStreamForMap(input);
+
+            map.OrderBy(key => key.Value);
+
             return Compress(
                 input,
                 output,
-                Tree.Fill(AnalyzeStreamForMap(input)).ToPriceMap()
+                Tree.Fill(map).ToPriceMap()
             );
         }
 
         public Archive Compress(Stream input, Stream output, Dictionary<byte, BitArray> bytePrice)
         {
-            using (var reader = new BinaryReader(input, encoding))
-            using (var writer = new BinaryWriter(output, encoding))
+            using (var reader = new BinaryReader(input, encoding, true))
+            using (var writer = new BinaryWriter(output, encoding, true))
             {
                 while (reader.BaseStream.Position != reader.BaseStream.Length)
                 {
@@ -60,8 +64,8 @@ namespace Core
                 bits.Add(convertedPrice);
             }
 
-            using (var reader = new BinaryReader(archive.Data, encoding))
-            using (var writer = new BinaryWriter(output, encoding))
+            using (var reader = new BinaryReader(archive.Data, encoding, true))
+            using (var writer = new BinaryWriter(output, encoding, true))
             {
                 while (reader.BaseStream.Position != reader.BaseStream.Length)
                 {
@@ -77,7 +81,7 @@ namespace Core
 
         private Dictionary<byte, long> AnalyzeStreamForMap(Stream input, Dictionary<byte, long> map)
         {
-            using (var reader = new BinaryReader(input, encoding))
+            using (var reader = new BinaryReader(input, encoding, true))
             {
                 var length = reader.BaseStream.Length;
 
@@ -86,6 +90,8 @@ namespace Core
                     map[reader.ReadByte()]++;
                 }
             }
+
+            input.Position = 0;
 
             return map;
         }
@@ -97,7 +103,14 @@ namespace Core
 
         private static Dictionary<byte, long> InitEmptyMap()
         {
-            return new Dictionary<byte, long>(byte.MaxValue + 1);
+            var map = new Dictionary<byte, long>(byte.MaxValue + 1);
+
+            for (byte i = 0; i < byte.MaxValue; i++)
+            {
+                map.Add(i, 0);
+            }
+
+            return map;
         }
     }
 }

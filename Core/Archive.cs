@@ -7,16 +7,13 @@ namespace Core
 {
     public class Archive
     {
-        private Stream data;
-        private Dictionary<byte, BitArray> bytePrice;
-
-        public Stream Data => data;
-        public Dictionary<byte, BitArray> BytePrice => bytePrice;
+        public Stream Data { get; }
+        public Dictionary<byte, BitArray> BytePrice { get; }
 
         public Archive(Stream data, Dictionary<byte, BitArray> bytePrice)
         {
-            this.data = data;
-            this.bytePrice = bytePrice;
+            Data = data;
+            BytePrice = bytePrice;
         }
 
         public Stream Serialize()

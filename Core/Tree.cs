@@ -7,9 +7,7 @@ namespace Core
 {
     public class Tree
     {
-        private Node root;
-
-        public Node Root => root;
+        public Node Root { get; private set; }
 
         public Tree Fill(Dictionary<byte, long> map)
         {
@@ -20,9 +18,7 @@ namespace Core
 
             var nodes = new List<Node>();
 
-            map.OrderBy(key => key.Value)
-                .ToList()
-                .ForEach(pair => nodes.Add(new Node(pair.Key, pair.Value)));
+            map.ToList().ForEach(pair => nodes.Add(new Node(pair.Key, pair.Value)));
 
             while (nodes.Count >= 2)
             {
@@ -33,7 +29,7 @@ namespace Core
                 nodes.Insert(index < 0 ? 0 : index, node);
             }
 
-            root = nodes.First();
+            Root = nodes.First();
 
             return this;
         }
