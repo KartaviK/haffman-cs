@@ -24,7 +24,7 @@ namespace Tests
 
             var archive = compressor.Compress(input, output);
 
-            Assert.Pass();
+            Assert.GreaterOrEqual(input.Length, archive.Data.Length);
         }
 
         private FileStream LoremIpsum(int size)

@@ -11,7 +11,7 @@ namespace Core
         public static Archive Deserialize(this Stream encoded)
         {
             var tree = new Tree();
-            var map = new Dictionary<byte, long>();
+            var map = new Dictionary<char, long>();
 
             using (var reader = new BinaryReader(encoded))
             {
@@ -19,7 +19,7 @@ namespace Core
 
                 for (byte i = 0; i < sequencesCount; i++)
                 {
-                    map.Add(reader.ReadByte(), reader.ReadByte());
+                    map.Add(reader.ReadChar(), reader.ReadByte());
                 }
             }
 

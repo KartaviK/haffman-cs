@@ -30,7 +30,7 @@ namespace Core
             );
         }
 
-        public Archive Compress(Stream input, Stream output, Dictionary<byte, BitArray> bytePrice)
+        public Archive Compress(Stream input, Stream output, Dictionary<char, BitArray> bytePrice)
         {
             using (var reader = new BinaryReader(input, encoding, true))
             using (var writer = new BinaryWriter(output, encoding, true))
@@ -79,15 +79,21 @@ namespace Core
             return output;
         }
 
-        private Dictionary<byte, long> AnalyzeStreamForMap(Stream input, Dictionary<byte, long> map)
+        private Dictionary<char, long> AnalyzeStreamForMap(Stream input, Dictionary<char, long> map)
         {
             using (var reader = new BinaryReader(input, encoding, true))
             {
                 var length = reader.BaseStream.Length;
+                char tempTargetByte;
 
                 while (reader.BaseStream.Position != length)
                 {
-                    map[reader.ReadByte()]++;
+                    tempTargetByte = reader.ReadChar();
+
+                    if (map.ContainsKey(tempTargetByte))
+                        map[tempTargetByte]++;
+                    else
+                       map.Add(tempTargetByte, 1);
                 }
             }
 
@@ -96,21 +102,14 @@ namespace Core
             return map;
         }
 
-        private Dictionary<byte, long> AnalyzeStreamForMap(Stream input)
+        private Dictionary<char, long> AnalyzeStreamForMap(Stream input)
         {
             return AnalyzeStreamForMap(input, InitEmptyMap());
         }
 
-        private static Dictionary<byte, long> InitEmptyMap()
+        private static Dictionary<char, long> InitEmptyMap()
         {
-            var map = new Dictionary<byte, long>(byte.MaxValue + 1);
-
-            for (byte i = 0; i < byte.MaxValue; i++)
-            {
-                map.Add(i, 0);
-            }
-
-            return map;
+            return new Dictionary<char, long>(byte.MaxValue + 1);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Core
     public class Archive
     {
         public Stream Data { get; }
-        public Dictionary<byte, BitArray> BytePrice { get; }
+        public Dictionary<char, BitArray> BytePrice { get; }
 
-        public Archive(Stream data, Dictionary<byte, BitArray> bytePrice)
+        public Archive(Stream data, Dictionary<char, BitArray> bytePrice)
         {
             Data = data;
             BytePrice = bytePrice;

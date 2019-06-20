@@ -1,15 +1,10 @@
-using System;
-
 namespace Core
 {
-    /// <summary>
-    ///     Represents binary tree's indivisible element
-    /// </summary>
     public class Node
     {
         private readonly long weight;
 
-        public byte? Value { get; }
+        public char? Value { get; }
 
         public long Weight
         {
@@ -23,7 +18,7 @@ namespace Core
         {
         }
 
-        public Node(byte value, long weight)
+        public Node(char value, long weight)
         {
             Value = value;
             this.weight = weight;

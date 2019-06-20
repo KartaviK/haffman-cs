@@ -9,7 +9,9 @@ namespace Core
     {
         public Node Root { get; private set; }
 
-        public Tree Fill(Dictionary<byte, long> map)
+        public int Count { get; private set; }
+
+        public Tree Fill(Dictionary<char, long> map)
         {
             if (map.Count < 2)
             {
@@ -18,6 +20,7 @@ namespace Core
 
             var nodes = new List<Node>();
 
+            Count = map.Count;
             map.ToList().ForEach(pair => nodes.Add(new Node(pair.Key, pair.Value)));
 
             while (nodes.Count >= 2)
@@ -36,9 +39,9 @@ namespace Core
 
         public Dictionary<byte, BitArray> ToPriceMap()
         {
-            var map = new Dictionary<byte, BitArray>();
+            var map = new Dictionary<char, BitArray>();
 
-            for (byte value = 0; value < byte.MaxValue; value++)
+            for (int value = 0; value < this.Count; value++)
             {
                 var price = CalculateBytePrice(value);
 
@@ -51,12 +54,12 @@ namespace Core
             return map;
         }
 
-        private List<bool> CalculateBytePrice(byte value)
+        private List<bool> CalculateBytePrice(char value)
         {
             return CalculateBytePrice(Root, value, new List<bool>());
         }
 
-        private static List<bool> CalculateBytePrice(Node target, byte value, List<bool> price)
+        private static List<bool> CalculateBytePrice(Node target, char value, List<bool> price)
         {
             if (target.IsLeaf())
             {
